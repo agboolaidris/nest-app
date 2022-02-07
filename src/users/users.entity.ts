@@ -1,4 +1,10 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export default class User extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -12,4 +18,13 @@ export default class User extends BaseEntity {
 
   @Column()
   country: string;
+
+  @Column()
+  gender: string;
+
+  @UpdateDateColumn()
+  update_at: Date;
+
+  @CreateDateColumn()
+  created_at: Date;
 }
