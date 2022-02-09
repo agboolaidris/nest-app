@@ -1,17 +1,20 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, ResDto } from './dto/create-auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Body() createAuthDto: CreateAuthDto): {
+  async register(@Body() createAuthDto: CreateAuthDto): Promise<ResDto> {
     try {
-      
+      const res = await this.authService.validateRegisterInput(createAuthDto);
+      return { msg: res };
     } catch (error) {
-      return error.response;
+      return {
+        msg: error.message,
+      };
     }
   }
 }

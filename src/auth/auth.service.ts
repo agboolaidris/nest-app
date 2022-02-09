@@ -12,22 +12,24 @@ export class AuthService {
     @InjectRepository(UserRepository)
     private UserRepository: Repository<UserRepository>,
   ) {}
-  async validateRegisterInput(data: CreateAuthDto) {
+  async validateRegisterInput(data: CreateAuthDto): Promise<string> {
     const user = this.UserRepository.create(data);
 
     const errors = await validate(user);
     if (errors.length > 0) {
-      const err = {};
-      errors.forEach((err) => {
-        const key = err.property;
+      // const err = {};
+      // errors.forEach((err) => {
+      //   const key = err.property;
 
-        if (err.constraints) {
-          const value = Object.entries(err.constraints)[0][1];
-          err[key] = value;
-        }
-      });
+      //   if (err.constraints) {
+      //     const value = Object.entries(err.constraints)[0][1];
+      //     err[key] = value;
+      //   }
+      // });
 
-      return err;
+      return 'validate err';
     }
+
+    return 'validate suc';
   }
 }
