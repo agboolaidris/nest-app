@@ -9,10 +9,10 @@ const config: PostgresConnectionOptions = {
   database: 'test',
   synchronize: false,
   logging: true,
-  entities: ['dist/src/**/*.entity{.ts,.js}'],
-  migrations: ['dist/db/migrations/*{.ts,.js}'],
+  entities: ['dist/src/**/*.entity.js'],
+  migrations: ['dist/src/db/migrations/*.js'],
   cli: {
-    migrationsDir: 'dist/db/migrations',
+    migrationsDir: 'src/db/migrations',
   },
 };
 
