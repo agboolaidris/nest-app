@@ -17,3 +17,11 @@ export class CreateAuthDto {
 export class ResDto {
   msg: string;
 }
+
+export class LoginAuthDto {
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  password: string;
+}

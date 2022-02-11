@@ -1,15 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 import UserRepository from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
+import { UserService } from './../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserRepository)
     private UserRepository: Repository<UserRepository>,
+    private UserService: UserService,
   ) {}
 
   async validateRegisterInput(data: CreateAuthDto): Promise<boolean> {
@@ -29,5 +31,9 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  async validateLoginInput(data: LoginAuthDto): Promise<boolean> {
+    const user = await this.UserService.findUserByUsername(data.username);
   }
 }
