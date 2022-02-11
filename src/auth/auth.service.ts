@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import bcrypt from 'bcrypt';
 import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 import UserRepository from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -33,8 +34,11 @@ export class AuthService {
     return true;
   }
 
-  async validateLoginInput(data: LoginAuthDto): Promise<boolean> {
+  async validateLoginInput(data: LoginAuthDto): Promise<UserRepository | null> {
     const user = await this.userService.findUserByUsername(data.username);
-    return false;
+
+    if (!user || bcrypt.compare(data.password, user.password)) return null;
+
+    return user;
   }
 }
