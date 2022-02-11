@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 import UserRepository from 'src/user/entities/user.entity';
@@ -10,12 +10,12 @@ import { UserService } from './../user/user.service';
 export class AuthService {
   constructor(
     @InjectRepository(UserRepository)
-    private UserRepository: Repository<UserRepository>,
-    private UserService: UserService,
+    private userRepository: Repository<UserRepository>,
+    private userService: UserService,
   ) {}
 
   async validateRegisterInput(data: CreateAuthDto): Promise<boolean> {
-    const newuser = this.UserRepository.create(data);
+    const newuser = this.userRepository.create(data);
 
     const errors = await validate(newuser);
     if (errors.length > 0) {
@@ -34,6 +34,7 @@ export class AuthService {
   }
 
   async validateLoginInput(data: LoginAuthDto): Promise<boolean> {
-    const user = await this.UserService.findUserByUsername(data.username);
+    const user = await this.userService.findUserByUsername(data.username);
+    return false;
   }
 }
