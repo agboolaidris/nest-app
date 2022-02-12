@@ -23,7 +23,6 @@ export class AuthController {
     try {
       const res = await this.authService.validateRegisterInput(createAuthDto);
       if (res) return { msg: 'vvv' };
-      return { msg: 'jjjj' };
     } catch (error) {
       if (error.code === '23505') {
         if (error.detail.includes('email'))
@@ -42,8 +41,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    //console.log(body);
-    return {};
+  async login(@Body() LoginInput: LoginAuthDto) {
+    return { user: LoginInput };
   }
 }
