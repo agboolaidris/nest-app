@@ -1,19 +1,22 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import bcrypt from 'bcrypt';
+import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 import UserRepository from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
+import { UserService } from './../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserRepository)
-    private UserRepository: Repository<UserRepository>,
+    private userRepository: Repository<UserRepository>,
+    private userService: UserService,
   ) {}
 
   async validateRegisterInput(data: CreateAuthDto): Promise<boolean> {
-    const newuser = this.UserRepository.create(data);
+    const newuser = this.userRepository.create(data);
 
     const errors = await validate(newuser);
     if (errors.length > 0) {
@@ -29,5 +32,13 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  async validateLoginInput(data: LoginAuthDto): Promise<UserRepository | null> {
+    const user = await this.userService.findUserByUsername(data.username);
+
+    if (!user || bcrypt.compare(data.password, user.password)) return null;
+
+    return user;
   }
 }

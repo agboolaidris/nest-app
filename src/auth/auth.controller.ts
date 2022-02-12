@@ -1,13 +1,14 @@
+import { LocalAuthGuard } from './local.auth.guard';
 import {
   Controller,
-  Get,
   Post,
   Body,
-  UnauthorizedException,
   Res,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto, ResDto } from './dto/create-auth.dto';
+import { CreateAuthDto, ResDto, LoginAuthDto } from './dto/create-auth.dto';
 import { Response } from 'express';
 
 @Controller('auth')
@@ -37,5 +38,12 @@ export class AuthController {
         res.status(400).json({ error });
       }
     }
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req, @Body() body: LoginAuthDto) {
+    console.log(body);
+    return {};
   }
 }
