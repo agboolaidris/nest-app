@@ -41,7 +41,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() LoginInput: LoginAuthDto) {
-    return { user: LoginInput };
+  async login() {
+    return { user: '' };
   }
 }
