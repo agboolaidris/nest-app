@@ -7,6 +7,7 @@ export class AuthController {
 
   @Post('/login')
   login() {
+    console.log(process.env.DATABASE_URL);
     return this.authService.login();
   }
 
