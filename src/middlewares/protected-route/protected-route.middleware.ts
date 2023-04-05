@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class ProtectedRouteMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('protected route', req.body);
+    console.log('protected route');
     res.cookie('cookie', 'ahhhhhh');
     next();
   }
