@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   BeforeInsert,
   Column,
   CreateDateColumn,
@@ -12,12 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class User extends BaseEntity {
-  constructor(user: Partial<User>) {
-    super();
-    Object.assign(this, user);
-  }
-
+export class User {
   @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
