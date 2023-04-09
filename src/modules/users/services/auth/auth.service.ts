@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from '../../dtos/sign-up.dto';
+import { SignInDto } from '../../dtos/sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,14 @@ export class AuthService {
     @InjectRepository(User) private UserRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
+
+  private GenerateAccessToken(user: User) {
+    return this.jwtService.signAsync({ uuid: user.uuid }, { secret: 'ggggg' });
+  }
+
+  private GenerateRefreshToken(user: User) {
+    return this.jwtService.signAsync({ uuid: user.uuid }, { secret: 'kkkkk' });
+  }
 
   async SignUp(signUpDto: SignUpDto) {
     try {
@@ -27,15 +36,20 @@ export class AuthService {
     }
   }
 
-  async SignIn(email: string, password: string) {
+  async SignIn({ email, password }: SignInDto) {
     const user = await this.UserRepository.findOne({ where: { email } });
+
     if (!user)
       throw new UnauthorizedException(['email or password is invalid']);
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch)
       throw new UnauthorizedException(['email or password is invalid']);
 
-    return this.jwtService.signAsync({ uuid: user.uuid });
+    return {
+      accessToken: await this.GenerateAccessToken(user),
+      refreshToken: await this.GenerateRefreshToken(user),
+    };
   }
 }
