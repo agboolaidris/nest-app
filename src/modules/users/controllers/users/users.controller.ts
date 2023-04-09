@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   UseInterceptors,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from '../../services/users/users.service';
 
@@ -28,5 +29,11 @@ export class UsersController {
         },
       );
     }
+  }
+
+  @Get('/me')
+  getUser(@Session() session: Record<string, any>) {
+    session.visits = session.visits ? session.visits + 1 : 1;
+    return { message: 'me', session: session.visits };
   }
 }

@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from '../../dtos/sign-up.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async SignUp(signUpDto: SignUpDto) {
@@ -34,6 +36,6 @@ export class AuthService {
     if (!isMatch)
       throw new UnauthorizedException(['email or password is invalid']);
 
-    return user;
+    return this.jwtService.signAsync({ uuid: user.uuid });
   }
 }
