@@ -6,8 +6,10 @@ import {
   HttpStatus,
   UseInterceptors,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../../services/users/users.service';
+import { AuthGuard } from '../../guards/auth/auth.guard';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -32,6 +34,7 @@ export class UsersController {
   }
 
   @Get('/me')
+  @UseGuards(AuthGuard)
   getUser(@Session() session: Record<string, any>) {
     session.visits = session.visits ? session.visits + 1 : 1;
     return { message: 'me', session: session.visits };
