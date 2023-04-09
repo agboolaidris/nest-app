@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Post,
+  Session,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -28,7 +29,14 @@ export class AuthController {
 
   @Post('/signin')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async Signin(@Body() signInDto: SignInDto) {
-    return this.authService.SignIn(signInDto.email, signInDto.password);
+  async Signin(
+    @Body() signInDto: SignInDto,
+    @Session() session: Record<string, any>,
+  ) {
+    session.authentication = await this.authService.SignIn(
+      signInDto.email,
+      signInDto.password,
+    );
+    return { message: 'user authentication successfuly' };
   }
 }
