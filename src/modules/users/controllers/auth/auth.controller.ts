@@ -3,7 +3,9 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Post,
+  Req,
   Res,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -13,6 +15,14 @@ import { AuthService } from '../../services/auth/auth.service';
 import { PasswordValidationPipe } from '../../pipes/password-validation/password-validation.pipe';
 import { SignInDto } from '../../dtos/sign-in.dto';
 import { Response } from 'express';
+import { RefreshGuard } from '../../guards/refresh/refresh.guard';
+import { Request } from 'express';
+
+declare module 'express' {
+  export interface Request {
+    user: any;
+  }
+}
 
 @Controller('api/auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -43,8 +53,11 @@ export class AuthController {
   }
 
   @Post('refresh')
-  async refresh(@Res() res: Response) {
-    res.clearCookie('jid');
-    res.json({ message: 'signout successfull' });
+  @UseGuards(RefreshGuard)
+  async refresh(@Res() res: Response, @Req() req: Request) {
+    const token = await this.authService.GetNewTokens(req.user.uuid);
+
+    res.cookie('jid', token.refreshToken);
+    res.json({ accessToken: token.accessToken });
   }
 }
