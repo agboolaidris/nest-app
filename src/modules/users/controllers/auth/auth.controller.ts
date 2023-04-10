@@ -14,7 +14,7 @@ import { PasswordValidationPipe } from '../../pipes/password-validation/password
 import { SignInDto } from '../../dtos/sign-in.dto';
 import { Response } from 'express';
 
-@Controller('auth')
+@Controller('api/auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -36,8 +36,14 @@ export class AuthController {
     res.json({ accessToken: token.accessToken });
   }
 
-  @Post('/signout')
+  @Post('signout')
   async signOut(@Res() res: Response) {
+    res.clearCookie('jid');
+    res.json({ message: 'signout successfull' });
+  }
+
+  @Post('refresh')
+  async refresh(@Res() res: Response) {
     res.clearCookie('jid');
     res.json({ message: 'signout successfull' });
   }
