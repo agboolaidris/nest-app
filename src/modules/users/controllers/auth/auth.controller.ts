@@ -56,7 +56,6 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   async refresh(@Res() res: Response, @Req() req: Request) {
     const token = await this.authService.GetNewTokens(req.user.uuid);
-
     res.cookie('jid', token.refreshToken);
     res.json({ accessToken: token.accessToken });
   }
