@@ -52,4 +52,14 @@ export class AuthService {
       refreshToken: await this.GenerateRefreshToken(user),
     };
   }
+
+  async GetNewTokens(userId: string) {
+    const user = await this.UserRepository.findOne({ where: { uuid: userId } });
+    if (!user) throw new UnauthorizedException(['Invalid Token']);
+
+    return {
+      accessToken: await this.GenerateAccessToken(user),
+      refreshToken: await this.GenerateRefreshToken(user),
+    };
+  }
 }
